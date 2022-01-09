@@ -45,4 +45,4 @@ void pause(void);
 int yes(void);
 int findIndex(const struct Contact* contacts, int size, const char cellNum[]);
 
-#endif CONTACTS_HELPERS_H_
+#endif

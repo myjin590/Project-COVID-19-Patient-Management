@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "helpers.h"
 
 #define MAXCONTACTS 50
@@ -168,7 +169,7 @@ int readFile(char* filename, struct Contact* contacts)
 void patientManagerSystem(void)
 {
     struct Contact contact[MAXCONTACTS] = {0};
-    int openfile = readFile("covid19_contact.csv", &contact);
+    int openfile = readFile("covid19_contact.csv", contact);
     int isDone = 0;
     int option = 0;
     if (openfile == 1) { //file is opened
@@ -234,7 +235,7 @@ void saveFile(struct Contact* contact, int size)
     fprintf(f, "first_name, last_name, Birth_date, test_date, result, address, city, province, postal, phone1, phone2, email\n");
     if (f) {
         while (i != MAXCONTACTS) {
-            if (strlen(contact[i].numbers.cell) != NULL) {
+            if (strlen(contact[i].numbers.cell) != 0) {
                 fprintf(f, "%s,%s,%d.%d.%d,%d-%d-%d,", 
                     &contact[i].name.firstName, &contact[i].name.lastName, 
                     contact[i].birthdate.year, contact[i].birthdate.month, contact[i].birthdate.day,
@@ -298,10 +299,10 @@ void calculatePercentageByPrv(const struct Contact* contact, int size, int categ
     double groupArr[8] = { on, ab, bc, nb, sk, ns, qc, etc };
     
     if (category == 1) {//save the result
-        printPercentage(1, province, &groupArr, total);
+        printPercentage(1, province, groupArr, total);
     }
     else { //print the result
-        saveRecordFile("Province", province, &groupArr);
+        saveRecordFile("Province", province, groupArr);
     }
 
 }
@@ -347,15 +348,15 @@ void calculatePercentageByAge(const struct Contact* contact, int size, int categ
     double groupArr[8] = { g1, g2, g3, g4, g5, g6, g7, g8 };
     if (category == 1) {
         //save the result
-        printPercentage(1, ageGroup, &groupArr, total);
+        printPercentage(1, ageGroup, groupArr, total);
     }
     else { 
         //print the result
-        saveRecordFile("Age", ageGroup, &groupArr);
+        saveRecordFile("Age", ageGroup, groupArr);
     }
 }
 
-void saveRecordFile(char* category, char groupName[][6], double* group) {
+void saveRecordFile(char* category, char groupName[][6], double group[]) {
     FILE* f;
     int i = 0;
     if (strcmp(category, "Age") == 0) {
@@ -377,7 +378,7 @@ void saveRecordFile(char* category, char groupName[][6], double* group) {
     }
 }
 
-void printPercentage(int category, char group[][6], double *resultArr, int total) 
+void printPercentage(int category, char group[][6], double* resultArr, int total) 
 {   //category 1==Age , category 2==Province
     if (category == 1){
         printHeader("Results by Age");
@@ -412,16 +413,17 @@ char* getResult(char* r)
 {
     int isDone = 0;
     char NL = 0;
-    char result[9] = { 0 };
+    char *result = { 0 };
     while (!isDone) {
         scanf("%c%c", r, &NL);
         if (NL == '\n' ) {
             if (*r == 'P' || *r == 'p') {
-                strcpy(result, "Positive");
+                //strcpy(result, "Positive");
+                result = "Positive";
                 isDone = 1;
             }
             else if (*r == 'N' || *r == 'n') {
-                strcpy(result, "Negative");
+                result="Negative";
                 isDone = 1;
             }
         }

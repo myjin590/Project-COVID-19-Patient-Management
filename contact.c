@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "helpers.h"
 
@@ -86,7 +87,7 @@ void getResults(struct Result* result)
     char r[2] = { 0 };
    
     printf("Patient's covid test result (ex: Positive -> P or Negative -> N): ");
-    strcpy(result->results,getResult(&r)); // check validation and copy to result
+    strcpy(result->results,getResult(r)); // check validation and copy to result
 
     printf("Patient's covid test date in number(ex: YYYY.MM.DD): ");
     while (!isDone) {

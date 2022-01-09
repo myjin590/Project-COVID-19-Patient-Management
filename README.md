@@ -14,9 +14,9 @@ User can save the updated patients' data, and records of results.
 * First of all, download the zip file and unzip on your computer, or clone the repository using HTTPS.
 `git clone https://github.com/myjin590/Covid19-project.git`
 
-*Compile the source codes
+* Compile the source codes
 `gcc -o ws contact.c helpers.c covid19_project.`
-*Run the executable program
+* Run the executable program
 `ws.exe`
 
 

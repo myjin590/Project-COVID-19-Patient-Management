@@ -21,12 +21,16 @@ User can save the updated patients' data, and records of results.
 
 
 ## Sample output
-<img src="/image/menu.jpg" width="400px"></img>
-<img src="/image/1..jpg" width="400px"></img>
-<img src="/image/2..jpg" width="400px"></img>
-<img src="/image/2-2.jpg" width="400px"></img>
-<img src="/image/3.jpg" width="400px"></img>
-<img src="/image/added.jpg" width="400px"></img>
+<img src="/image/menu.jpg" width="500px"></img><br>
+<img src="/image/1..jpg" width="500px"></img><br>
+<img src="/image/2..jpg" width="500px"></img><br>
+<img src="/image/2-2.jpg" width="500px"></img><br>
+<img src="/image/3.jpg" width="500px"></img><br>
+<img src="/image/added.jpg" width="500px"></img><br>
+<img src="/image/4.modify.jpg" width="500px"></img><br>
+<img src="/image/modified.jpg" width="500px"></img><br>
+<img src="/image/5.jpg" width="500px"></img><br>
+
 
 ## Authors
 Jinny Yun

@@ -21,7 +21,7 @@ User can save the updated patients' data, and records of results.
 
 
 ## Sample output
-
+<img src="/image/1..jpg" width="400px"></img>
 
 ## Authors
 Jinny Yun

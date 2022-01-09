@@ -19,7 +19,7 @@ User can save the updated patients' data, and records of results.
 * How to run the program
 * Step-by-step bullets
 
-gcc -o ws contact.c helpers.c covid19_project.c
+`gcc -o ws contact.c helpers.c covid19_project.`
 
 ## Authors
 

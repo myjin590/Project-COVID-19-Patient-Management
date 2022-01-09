@@ -3,6 +3,6 @@
 
 int main(void)
 {
-    contactManagerSystem();
+    patientManagerSystem();
     return 0;
 }

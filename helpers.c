@@ -79,7 +79,7 @@ int yes(void)
     return yesno;
 }
 
-int printMainMenu(void)
+int displayMainMenu(void)
 {
     int select = 0;   
     printf("-------------------------\n");
@@ -165,7 +165,7 @@ int readFile(char* filename, struct Contact* contacts)
     return 1;
 }
 
-void contactManagerSystem(void) 
+void patientManagerSystem(void)
 {
     struct Contact contact[MAXCONTACTS] = {0};
     int openfile = readFile("covid19_contact.csv", &contact);
@@ -174,42 +174,47 @@ void contactManagerSystem(void)
     if (openfile == 1) { //file is opened
         while (!isDone)
         {
-            option = printMainMenu();
+            option = displayMainMenu();
             switch (option) {
             case 1:
-                displayContacts(contact, MAXCONTACTS);  //1. Display All patients
+                displayPatients(contact, MAXCONTACTS);  //1. Display All patients
                 pause();
                 break;
             case 2:
-                printSubMenu(contact, MAXCONTACTS);  //2. Display Records
+                displaySubMenu(contact, MAXCONTACTS);  //2. Display Records
                 pause();
                 break;
             case 3:
-                addContact(contact, MAXCONTACTS);   //3. Add Patients
+                addPatients(contact, MAXCONTACTS);   //3. Add Patients
                 pause();
                 break;
             case 4:
-                updateContact(contact, MAXCONTACTS); // 4. Modify Patient
+                updatePatients(contact, MAXCONTACTS); // 4. Modify Patient
                 pause();
                 break;
             case 5:
-                deleteContact(contact, MAXCONTACTS); // 5. Remove Patient
+                deletePatients(contact, MAXCONTACTS); // 5. Remove Patient
                 pause();
                 break;
             case 6:
-                searchContacts(contact, MAXCONTACTS); // 4. Search Patient
+                searchPatients(contact, MAXCONTACTS); // 4. Search Patient
                 pause();
                 break;
             case 0:
                 printf("\nExit the program? (Y)es/(N)o: "); // 0. Exit
                 if (yes() == 1){
                     printf("\n");
-                    printf("Would you like to save it? (Y)es/(N)o: ");
+                    printf("Would you like to save the updated data? (Y)es/(N)o: ");
                     if (yes() == 1) {
                         saveFile(contact, MAXCONTACTS); //Save data
                     }
-                    printf("Covid-Patient Management System: terminated\n");
                     isDone = 1;
+                    printf("Would you like to save the record of result? (Y)es/(N)o: ");
+                    if (yes() == 1) {
+                        calculatePercentageByAge(contact, MAXCONTACTS, 2);
+                        calculatePercentageByPrv(contact, MAXCONTACTS, 2);
+                    }
+                    printf("Covid-Patient Management System: terminated\n");
                 }
                 else{
                     printf("\n");
@@ -247,11 +252,13 @@ void saveFile(struct Contact* contact, int size)
     else {
         printf("fail to open file\n");
     }
+
+
 }
 
-void calculatePercentageByPrv(const struct Contact* contact, int size) 
+void calculatePercentageByPrv(const struct Contact* contact, int size, int category) 
 {
-    char province[7][3] = { "ON", "AB", "BC", "NB", "SK", "NS", "QC" };
+    char province[8][6] = { "ON", "AB", "BC", "NB", "SK", "NS", "QC", "Other"};
     int total = 0; //total patient with Positive result
     double on = 0.0; double ab = 0.0; double bc = 0.0; double nb = 0.0;
     double qc = 0.0; double ns = 0.0; double sk = 0.0; double etc = 0.0;
@@ -288,26 +295,25 @@ void calculatePercentageByPrv(const struct Contact* contact, int size)
             }
         }
     }
-    displayContactHeader("Results by Province");
-    printf("QC : %.2f%%\n", qc / total * 100);
-    printf("ON : %.2f%%\n", on / total * 100);
-    printf("AB : %.2f%%\n", ab / total * 100);
-    printf("NS : %.2f%%\n", ns / total * 100);
-    printf("NB : %.2f%%\n", nb / total * 100);
-    printf("SK : %.2f%%\n", sk / total * 100);
-    printf("BC : %.2f%%\n", bc / total * 100);
-    printf("Others: %.2f%%\n", etc / total * 100);
-    displayContactFooter(total);
+    double groupArr[8] = { on, ab, bc, nb, sk, ns, qc, etc };
+    
+    if (category == 1) {//save the result
+        printPercentage(1, province, &groupArr, total);
+    }
+    else { //print the result
+        saveRecordFile("Province", province, &groupArr);
+    }
+
 }
 
-void calculatePercentageByAge(const struct Contact* contact, int size) 
+void calculatePercentageByAge(const struct Contact* contact, int size, int category) 
 {
     int age = 0;
     int total = 0; //total patient with Positive result
-    double percentage = 0.0;
     double g1 = 0.0; double g2 = 0.0; double g3 = 0.0; double g4 = 0.0;
     double g5 = 0.0; double g6 = 0.0; double g7 = 0.0; double g8 = 0.0;
- 
+    char ageGroup[8][6] = { "~19", "20-30", "30-40", "40-50","50-60","60-70","70-80", "80~" };
+
     for (int i = 0; i < size; i++) {
         if (contact[i].birthdate.year != 0 && strcmp(contact[i].result.results, "Positive") == 0) {
             age = YEAR - contact[i].birthdate.year;
@@ -338,31 +344,67 @@ void calculatePercentageByAge(const struct Contact* contact, int size)
             total++;
         }
     }
-    displayContactHeader("Results by Age");
-    printf("~19years old : %.2f%%\n", g1 / total * 100);
-    printf("20~30years old : %.2f%%\n", g2 / total * 100);
-    printf("30~40years old : %.2f%%\n", g3 / total * 100);
-    printf("40~50years old : %.2f%%\n", g4 / total * 100);
-    printf("50~60years old : %.2f%%\n", g5 / total * 100);
-    printf("60~70years old : %.2f%%\n", g6 / total * 100);
-    printf("70~80years old : %.2f%%\n", g7 / total * 100);
-    printf("80years old~: %.2f %%\n", g8 / total * 100);
-    displayContactFooter(total);
+    double groupArr[8] = { g1, g2, g3, g4, g5, g6, g7, g8 };
+    if (category == 1) {
+        //save the result
+        printPercentage(1, ageGroup, &groupArr, total);
+    }
+    else { 
+        //print the result
+        saveRecordFile("Age", ageGroup, &groupArr);
+    }
 }
 
-void printSubMenu(const struct Contact* contact, int size)
+void saveRecordFile(char* category, char groupName[][6], double* group) {
+    FILE* f;
+    int i = 0;
+    if (strcmp(category, "Age") == 0) {
+        f = fopen("C:\\Users\\JJ\\source\\repos\\covid19_project\\covid19_record_age.csv", "w+");
+    }
+    else {
+        //category == "Province"
+        f = fopen("C:\\Users\\JJ\\source\\repos\\covid19_project\\covid19_record.csv", "w+");
+    }
+    
+    fprintf(f, "Country,%s,Cases\n", category); //category == age or Province
+    if (f) {
+        while (i != 8) {
+            fprintf(f, "Canada,%s,%.2f\n", groupName[i], group[i]);
+            i++;
+        }
+        fclose(f);
+        printf("***Saved updated Result in csv file***\n");
+    }
+}
+
+void printPercentage(int category, char group[][6], double *resultArr, int total) 
+{   //category 1==Age , category 2==Province
+    if (category == 1){
+        printHeader("Results by Age");
+    }
+    else {
+        printHeader("Results by Province");
+    }
+    for (int i = 0; i < 8; i++) {
+        double result = resultArr[i] / total * 100;
+        printf("%s : %.2f%%\n", group[i], result);
+    }
+    printFooter(total);
+}
+
+void displaySubMenu(const struct Contact* contact, int size)
 {
-    displayContactHeader("2. Display Records");
+    printHeader("2. Display Records");
     printf("Choose Option \n");
     printf("1. Display percentage of Positive results by Age\n");
     printf("2. Display percentage of Positive results by Province\n");
     printf("Select an option--> ");
     int selection = getIntInRange(1, 2);
     if (selection == 1) { // results by Age
-        calculatePercentageByAge(contact, MAXCONTACTS);
+        calculatePercentageByAge(contact, MAXCONTACTS, 1);
     }
     else if (selection == 2){ //results by Province
-        calculatePercentageByPrv(contact, MAXCONTACTS);
+        calculatePercentageByPrv(contact, MAXCONTACTS, 1);
     }
 }
 
@@ -392,7 +434,8 @@ char* getResult(char* r)
     return result;
 }
 
-char* getDate(char* date) {
+char* getDate(char* date) 
+{
     int needInput = 0;
     int isNotDigit = 0;
     while (!needInput)
@@ -460,7 +503,8 @@ void getTenDigitPhone(char phoneNum[]) {
     }
 }
 
-int findContactIndex(const struct Contact* contacts, int size, const char cellNum[]) {
+int findIndex(const struct Contact* contacts, int size, const char cellNum[]) 
+{
     int indexnum = 0;
     for (int i = 0; i < size; i++) {
         if (contacts[i].numbers.cell > 0) {
@@ -477,14 +521,14 @@ int findContactIndex(const struct Contact* contacts, int size, const char cellNu
     return -1;
 }
 
-void displayContactHeader(const char* title) {
+void printHeader(const char* title) {
     printf("\n");
     printf("+-----------------------------------------------------------------------------+\n");
     printf("                               %s                                      \n", title);
     printf("+-----------------------------------------------------------------------------+\n");
 }
 
-void displayContactFooter(int count) {
+void printFooter(int count) {
     printf("+-----------------------------------------------------------------------------+\n");
     printf("Total Patients : %d\n\n", count);
 }
@@ -493,7 +537,7 @@ void printSuccessMsg(const char* msg) {
     printf("patient's %s is successfully updated!\n", msg);
 }
 
-void displayContact(const struct Contact* contact) {
+void displayPatient(const struct Contact* contact) {
     printf("\n");
     printf("FULL NAME : %s %s\n", contact->name.firstName, contact->name.lastName);
     printf("     BIRTH DATE: %d-%d-%d \n", contact->birthdate.year, contact->birthdate.month, contact->birthdate.day);
@@ -511,39 +555,39 @@ void displayContact(const struct Contact* contact) {
     printf("---> RESULT    : %s\n", contact->result.results);
 }
 
-void displayContacts(const struct Contact* contacts, int size) {
+void displayPatients(const struct Contact* contacts, int size) {
     int total_contact = 0;
-    displayContactHeader("1. Display All patients ");
+    printHeader("1. Display All patients ");
     for (int i = 0; i < size; i++){
         if (strlen(contacts[i].numbers.cell) > 0){
             printf("%d | ", total_contact+1);
-            displayContact(&contacts[i]);
+            displayPatient(&contacts[i]);
             total_contact++;
         }
     }
-    displayContactFooter(total_contact);
+    printFooter(total_contact);
 }
 
-void searchContacts(const struct Contact* contacts, int size) {
+void searchPatients(const struct Contact* contacts, int size) {
     int Indexnum = 0;
     char cellNumber[13] = { 0 };
     printf("Enter the cell number for the contact: ");
     scanf("%12[^\n]%*c", cellNumber);
-    Indexnum = findContactIndex(contacts, size, cellNumber);
+    Indexnum = findIndex(contacts, size, cellNumber);
     if (Indexnum == 0 || Indexnum > 0){
         printf("\n");
-        displayContact(&contacts[Indexnum]);
+        displayPatient(&contacts[Indexnum]);
     }
     else{
         printf("*** Contact NOT FOUND ***\n\n");
     }
 }
 
-void addContact(struct Contact* contacts, int size) {
+void addPatients(struct Contact* contacts, int size) {
     int emptyIndex = 0;
     char Input_num[11] = { 0 };
-    displayContactHeader("3. Add patient");
-    emptyIndex = findContactIndex(contacts, size, Input_num);
+    printHeader("3. Add patient");
+    emptyIndex = findIndex(contacts, size, Input_num);
     if (emptyIndex == -1){
         printf("*** ERROR: The contact list is full! ***\n\n");
     }
@@ -569,19 +613,19 @@ int displayUpdateMenu(void) {
     return selection;
 }
 
-void updateContact(struct Contact* contacts, int size) {
+void updatePatients(struct Contact* contacts, int size) {
     char CellNum[13] = { 0 };
     int index = 0;
     int isDone = 0;
     int selection = 0;
 
-    displayContactHeader("4. Modify patient");
+    printHeader("4. Modify patient");
     printf("Enter the cell number for the contact: ");
     getTenDigitPhone(CellNum);
-    index = findContactIndex(contacts, size, CellNum);
+    index = findIndex(contacts, size, CellNum);
     if (index >= 0) {
         printf("\nContact found:\n");
-        displayContact(&contacts[index]);
+        displayPatient(&contacts[index]);
         printf("\n");
         while (!isDone)
         {
@@ -615,7 +659,7 @@ void updateContact(struct Contact* contacts, int size) {
                 break;
             case 5:
                 clearKeyboard();
-                getResult(&contacts[index].result);
+                getResults(&contacts[index].result);
                 printSuccessMsg("Result");
                 pause();
                 break;
@@ -630,18 +674,18 @@ void updateContact(struct Contact* contacts, int size) {
     }
 }
 
-void deleteContact(struct Contact* contacts, int size) {
+void deletePatients(struct Contact* contacts, int size) {
     char CellNum[13] = { 0 };
     int index = 0;
     printf("Enter the cell number for the contact: ");
     getTenDigitPhone(CellNum);
     clearKeyboard();
-    index = findContactIndex(contacts, size, CellNum); // finding index of cellnumber in array 
+    index = findIndex(contacts, size, CellNum); // finding index of cellnumber in array 
     if (index == 0 || index > 0)
     {
         printf("\n");
         printf("Contact found:\n");
-        displayContact(&contacts[index]);
+        displayPatient(&contacts[index]);
         printf("CONFIRM: Delete this contact? (y or n): ");
         if (yes() == 1){
             strcpy(contacts[index].numbers.cell, "");
@@ -655,10 +699,10 @@ void deleteContact(struct Contact* contacts, int size) {
     else{
         printf("*** Contact NOT FOUND ***\n\n");
     }
-    sortContacts(contacts, MAXCONTACTS);
+    sortPatients(contacts, MAXCONTACTS);
 }
 
-void sortContacts(struct Contact* contacts, int size) {
+void sortPatients(struct Contact* contacts, int size) {
     for (int i = 0;i < size;i++) {
         if (strlen(contacts[i].numbers.cell) == 0){
             //if the patients information is deleted

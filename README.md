@@ -8,7 +8,7 @@ and is allowed to Add, Modify, Remove, Search patient with cell phone number.\
 Also, it is able to get the records of patients who have tested positive in percentage by region or age.
 User can save the updated patients' data, and records of results.
 
-* Validation check\
+* Validation check
 
 Date
 1. date should be followed the form (ex: YYYY.MM.DD)
@@ -66,6 +66,8 @@ After deleting the patient\
 Jinny Yun
 
 ## Version History
+* 0.3
+   * Fixed bugs in sortPatient function
 * 0.2
     * Various bug fixes and optimizations
 * 0.1

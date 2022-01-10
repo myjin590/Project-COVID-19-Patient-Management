@@ -8,18 +8,19 @@ and is allowed to Add, Modify, Remove, Search patient with cell phone number.\
 Also, it is able to get the records of patients who have tested positive in percentage by region or age.
 User can save the updated patients' data, and records of results.
 
-* Validation\
-Date\
+* Validation check\
+
+Date
 1. date should be followed the form (ex: YYYY.MM.DD)
 2. Year can't be greater than 2021.
 3. Month should be between 0 and 12.
 4. Day should be between 0 and 31.
 
-Numbers\
+Numbers
 1. phone number should be 10 digits.
 2. phone number should be entered without dash
 
-Covid19-Testing Result\
+Covid19-Testing Result
 1. result should be entered one letter (P or N)
 
 ## Getting Started

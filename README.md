@@ -3,10 +3,18 @@ Covid19 - Patient Management & Record Tracking System
 
 ## Description
 
-This application manages patient information with Add, Modify, Remove, and Search functions.
+This application manages patient information such as Full name, Birth date, Address, Phone number, Covid19-testing date and result, \
+and is allowed to Add, Modify, Remove, Search patient with cell phone number.\
 Also, it is able to get the records of patients who have tested positive in percentage by region or age.
 User can save the updated patients' data, and records of results.
 
+* Validation
+-Date
+1. date should be followed the form (ex: YYYY.MM.DD)
+2. Year can't be greater than 2021.
+3. Month should be between 0 and 12.
+4. Day should be between 0 and 31.
+-
 
 ## Getting Started
 

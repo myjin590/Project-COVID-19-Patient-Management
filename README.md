@@ -22,25 +22,26 @@ User can save the updated patients' data, and records of results.
 
 ## Sample output
 * Menu\
-<img src="/image/menu.jpg" width="500px"></img><br>
+<img src="/project/menu.jpg" width="500px"></img><br>
 * 1.Display All patients\
-<img src="/image/1..jpg" width="500px"></img><br>
+<img src="/project/1.display.jpg" width="500px"></img><br>
 * 2.Display Records by age\
-<img src="/image/2..jpg" width="500px"></img><br>
+<img src="/project/2.records.jpg" width="500px"></img><br>
 * 2.Display Records by Province\
-<img src="/image/2-2.jpg" width="500px"></img><br>
+<img src="/project/2-2.jpg" width="500px"></img><br>
 * 3.Add Patient\
-<img src="/image/3.jpg" width="500px"></img><br>
-<img src="/image/added.jpg" width="500px"></img><br>
+<img src="/project/3.add.jpg" width="500px"></img><br>
+<img src="/project/3-added.jpg" width="500px"></img><br>
 * 4.Modify Patient\
-<img src="/image/4.modify.jpg" width="500px"></img><br>
-<img src="/image/modified.jpg" width="500px"></img><br>
+<img src="/project/4-modify.jpg" width="500px"></img><br>
+<img src="/project/4-modified.jpg" width="500px"></img><br>
 * 5.Remove Patient\
-<img src="/image/5.jpg" width="500px"></img><br>
+<img src="/project/5.remove.jpg" width="500px"></img><br>
+<img src="/project/5-removed.jpg" width="500px"></img><br>
 * 6.Search Patient\
-<img src="/image/6.jpg" width="500px"></img><br>
+<img src="/project/6.search.jpg" width="500px"></img><br>
 * Terminate program\
-<img src="/image/0.jpg" width="500px"></img><br>
+<img src="/project/0.exit.jpg" width="500px"></img><br>
 
 ## Authors
 Jinny Yun

@@ -6,24 +6,26 @@
 
 void getName(struct Name* name)
 {
-    printf("the patient's first name: ");
+    printf("Please enter Patient's first name: ");
     scanf("%30[^\n]%*c", name->firstName);
-    printf("the patient's last name: ");
+    printf("Please enter Patient's last name: ");
     scanf("%35[^\n]%*c", name->lastName);
 }
 
 void getAddress(struct Address* address)
 {
-    printf("Street address with street number: ");
+    char province[8][6] = { "ON", "AB", "BC", "NB", "SK", "NS", "QC", "Other" };
+    char tempPrv[6] = { 0 };
+    int isDone = 0;
+    printf("Please enter street address (include suite number): ");
     scanf("%40[^\n]%*c", address->street);
 
-    printf("City: ");
+    printf("Please enter City: ");
     scanf("%14[^\n]%*c", address->city);
 
-    printf("Province (ex:ON, QC, etc): ");
-    scanf("%2[^\n]%*c", address->province);
-
-    printf("Postal code: ");
+    printf("Please enter Province (ex:ON, QC, etc): ");
+    scanf("%5[^\n]%*c", address->province);
+    printf("Please enter Postal code: ");
     scanf("%7[^\n]%*c", address->postalCode);
 }
 
@@ -36,7 +38,7 @@ void getBirth(struct Birth* birth)
     int tempDay = 0;
     char* birthDate = {0};
 
-    printf("Patient's birthdate (ex: YYYY.MM.DD): ");
+    printf("Please enter Patient's Birth date (ex: YYYY.MM.DD): ");
     while (!isDone) {
         birthDate = strtok(getDate(temp), "."); //check validation of test date
         clearKeyboard();
@@ -52,26 +54,28 @@ void getBirth(struct Birth* birth)
             isDone = 1;
         }
         else {
-            printf("Enter date again(ex: YYYY.MM.DD): ");
+            printf("*ERROR* Enter date again(ex: YYYY.MM.DD): ");
             isDone = 0;
         }
     }
 }
 
-
 void getNumbers(struct Numbers* numbers)
 {
-    printf("Patient's cell phone number without dash: ");
+    printf("Please enter Patient's cell phone number without dash: ");
     getTenDigitPhone(numbers->cell); //check validation of phone number
     clearKeyboard();
     printf("Do you want to enter a second cell phone number? (y or n): ");
     if (yes() == 1) // get answer Y or N
     {
-        printf("patient's second cell phone number: ");
+        printf("Please enter Patient's second cell phone number: ");
         getTenDigitPhone(numbers->cell);
         clearKeyboard();
     }
-    printf("Patient's email address: ");
+    else {
+        strcpy(numbers->secondCell, "0");
+    }
+    printf("Please enter Patient's email address: ");
     scanf("%99[^\n]%*c", numbers->email);
 
 }
@@ -86,10 +90,10 @@ void getResults(struct Result* result)
     char* date = { 0 };
     char r[2] = { 0 };
    
-    printf("Patient's covid test result (ex: Positive -> P or Negative -> N): ");
+    printf("Please enter Patient's covid test result (ex: Positive -> P or Negative -> N): ");
     strcpy(result->results,getResult(r)); // check validation and copy to result
 
-    printf("Patient's covid test date in number(ex: YYYY.MM.DD): ");
+    printf("Please enter PCR testing date in number(ex: YYYY.MM.DD): ");
     while (!isDone) {
         date = strtok(getDate(temp), ".");
         clearKeyboard();
@@ -106,7 +110,7 @@ void getResults(struct Result* result)
             isDone = 1;
         }
         else {
-            printf("Enter date again(ex: YYYY.MM.DD): ");
+            printf("*ERROR* Please Enter date again(ex: YYYY.MM.DD): ");
             isDone = 0;
         }
     }
@@ -114,7 +118,7 @@ void getResults(struct Result* result)
 
 void getContact(struct Contact* contact) 
 {
-    printf("Please enter the following information\n");
+    printf("***Please enter the following information***\n");
     getName(&contact->name);
     getBirth(&contact->birthdate);
     getAddress(&contact->address);

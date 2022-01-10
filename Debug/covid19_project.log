@@ -1,8 +1,5 @@
-﻿  contact.c
-C:\Users\JJ\source\repos\covid19_project\contact.c(42,24): warning C4013: 'atoi' undefined; assuming extern returning int
-  helpers.c
-C:\Users\JJ\source\repos\covid19_project\helpers.c(126,46): warning C4013: 'atoi' undefined; assuming extern returning int
-C:\Users\JJ\source\repos\covid19_project\helpers.c(545,136): warning C4474: 'printf' : too many arguments passed for format string
-C:\Users\JJ\source\repos\covid19_project\helpers.c(545,136): message : placeholders and their parameters expect 3 variadic arguments, but 4 were provided
-  Generating Code...
+﻿  helpers.c
+C:\Users\JJ\source\repos\covid19_project\helpers.c(558,136): warning C4474: 'printf' : too many arguments passed for format string
+C:\Users\JJ\source\repos\covid19_project\helpers.c(558,136): message : placeholders and their parameters expect 3 variadic arguments, but 4 were provided
+C:\Users\JJ\source\repos\covid19_project\helpers.c(642,16): warning C4129: 'P': unrecognized character escape sequence
   covid19_project.vcxproj -> C:\Users\JJ\source\repos\covid19_project\Debug\covid19_project.exe

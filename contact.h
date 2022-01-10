@@ -20,7 +20,7 @@ struct Address
 {
     char street[41];
     char city[15];
-    char province[3];
+    char province[6];
     char postalCode[8];
 };
 

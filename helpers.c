@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "helpers.h"
 
-#define MAXCONTACTS 50
+#define MAXCONTACTS 100
 #define YEAR 2021
 
 void clearKeyboard(void) 
@@ -84,7 +84,7 @@ int displayMainMenu(void)
 {
     int select = 0;   
     printf("-------------------------\n");
-    printf("1. Display All patients  \n");
+    printf("1. Display All Patients  \n");
     printf("2. Display Records        \n");
             //--> 1) Display percentage of Positive by age
             //--> 2) Display percentage of Positive by Province
@@ -103,7 +103,7 @@ int readFile(char* filename, struct Contact* contacts)
     char buffer[1024];
     int row = 0;
     int field_count = 0;
-    FILE* fp = fopen("covid19_contact.csv", "r"); // open file to read
+    FILE* fp = fopen(filename, "r"); // open file to read
     if (!fp) {
         printf("Can't open the file\n");
         return -1;
@@ -169,12 +169,13 @@ int readFile(char* filename, struct Contact* contacts)
 void patientManagerSystem(void)
 {
     struct Contact contact[MAXCONTACTS] = {0};
-    int openfile = readFile("covid19_contact.csv", contact);
+    int openfile = readFile("patient.csv", contact);
     int isDone = 0;
     int option = 0;
-    if (openfile == 1) { //file is opened
+if (openfile == 1) { //file is opened
         while (!isDone)
         {
+            sortPatients(contact, MAXCONTACTS);
             option = displayMainMenu();
             switch (option) {
             case 1:
@@ -215,6 +216,7 @@ void patientManagerSystem(void)
                         calculatePercentageByAge(contact, MAXCONTACTS, 2);
                         calculatePercentageByPrv(contact, MAXCONTACTS, 2);
                     }
+                    printf("***Saved updated Result***\n");
                     printf("Covid-Patient Management System: terminated\n");
                 }
                 else{
@@ -253,58 +255,68 @@ void saveFile(struct Contact* contact, int size)
     else {
         printf("fail to open file\n");
     }
-
-
 }
 
 void calculatePercentageByPrv(const struct Contact* contact, int size, int category) 
 {
     char province[8][6] = { "ON", "AB", "BC", "NB", "SK", "NS", "QC", "Other"};
     int total = 0; //total patient with Positive result
+    int isGood = 0;
     double on = 0.0; double ab = 0.0; double bc = 0.0; double nb = 0.0;
     double qc = 0.0; double ns = 0.0; double sk = 0.0; double etc = 0.0;
     for (int i = 0; i < size; i++) {
         if (contact[i].birthdate.year != 0 && strcmp(contact[i].result.results, "Positive") == 0) { //validation --> contact[i] is not null && result == Positive 
+            isGood = 0;
             for (int j = 0; j <= 7; j++) {
-                if (strcmp(contact[i].address.province, province[j]) == 0) {
-                    if (j == 0) {
-                        on++;
-                    }
-                    else if (j == 1) {
-                        ab++;
-                    }
-                    else if (j == 2) {
-                        bc++;
-                    }
-                    else if (j == 3) {
-                        nb++;
-                    }
-                    else if (j == 4) {
-                        sk++;
-                    }
-                    else if (j == 5) {
-                        ns++;
-                    }
-                    else if (j == 6) {
-                        qc++;
-                    }
-                    else {
+                if (j == 7) { //if contact[i].address.province is not in province array
+                    if (strcmp(contact[i].address.province, province[j]) != 0 && isGood == 0) {
                         etc++;
                     }
-                    total++;
+                }
+                else {
+                    if (strcmp(contact[i].address.province, province[j]) == 0) {
+                        if (j == 0) {
+                            on++;
+                            isGood = 1;
+                        }
+                        else if (j == 1) {
+                            ab++;
+                            isGood = 1;
+                        }
+                        else if (j == 2) {
+                            bc++;
+                            isGood = 1;
+                        }
+                        else if (j == 3) {
+                            nb++;
+                            isGood = 1;
+                        }
+                        else if (j == 4) {
+                            sk++;
+                            isGood = 1;
+                        }
+                        else if (j == 5) {
+                            ns++;
+                            isGood = 1;
+                        }
+                        else if (j == 6) {
+                            qc++;
+                            isGood = 1;
+                        }
+                    }
                 }
             }
+            total++;
         }
     }
     double groupArr[8] = { on, ab, bc, nb, sk, ns, qc, etc };
     
-    if (category == 1) {//save the result
-        printPercentage(1, province, groupArr, total);
+    if (category == 1) {//print the result
+        printPercentage(2, province, groupArr, total);
     }
-    else { //print the result
+    else { //save the result
         saveRecordFile("Province", province, groupArr);
     }
-
 }
 
 void calculatePercentageByAge(const struct Contact* contact, int size, int category) 
@@ -347,11 +359,11 @@ void calculatePercentageByAge(const struct Contact* contact, int size, int categ
     }
     double groupArr[8] = { g1, g2, g3, g4, g5, g6, g7, g8 };
     if (category == 1) {
-        //save the result
+        //print the result
         printPercentage(1, ageGroup, groupArr, total);
     }
     else { 
-        //print the result
+        //save the result
         saveRecordFile("Age", ageGroup, groupArr);
     }
 }
@@ -374,7 +386,7 @@ void saveRecordFile(char* category, char groupName[][6], double group[]) {
             i++;
         }
         fclose(f);
-        printf("***Saved updated Result in csv file***\n");
+       
     }
 }
 
@@ -387,7 +399,7 @@ void printPercentage(int category, char group[][6], double* resultArr, int total
         printHeader("Results by Province");
     }
     for (int i = 0; i < 8; i++) {
-        double result = resultArr[i] / total * 100;
+        double result = (resultArr[i] / total) * 100;
         printf("%s : %.2f%%\n", group[i], result);
     }
     printFooter(total);
@@ -429,7 +441,7 @@ char* getResult(char* r)
         }
         else {
             clearKeyboard();
-            printf("Please enter P(positive) or N(negative): ");
+            printf("*ERROR* Please enter P(positive) or N(negative): ");
             isDone = 0;
         }
     }
@@ -456,7 +468,7 @@ char* getDate(char* date)
                 }
             }
             if (isNotDigit == 1) {
-                printf("Enter date again(ex: YYYY.MM.DD): ");
+                printf("*ERROR* Enter date again(ex: YYYY.MM.DD): ");
                 needInput = 0;
             }
             else {
@@ -464,7 +476,7 @@ char* getDate(char* date)
             }
         }
         else { //if date is longer than 10 digits
-            printf("Enter date again(ex: YYYY.MM.DD): ");
+            printf("*ERROR* Enter date again(ex: YYYY.MM.DD): ");
         }
     }
     return date;
@@ -492,7 +504,7 @@ void getTenDigitPhone(char phoneNum[]) {
                 }
             }
             if (isNotDigit == 1) {
-                printf("Enter a 10-digit phone number: ");
+                printf("*ERROR* Enter a 10-digit phone number: ");
                 needInput = 0; 
             }
             else {
@@ -500,7 +512,7 @@ void getTenDigitPhone(char phoneNum[]) {
             }
         }
         else {
-            printf("Enter a 10-digit phone number: ");
+            printf("*ERROR* Enter a 10-digit phone number: ");
         }
     }
 }
@@ -559,9 +571,9 @@ void displayPatient(const struct Contact* contact) {
 
 void displayPatients(const struct Contact* contacts, int size) {
     int total_contact = 0;
-    printHeader("1. Display All patients ");
+    printHeader("1. Display All Patients ");
     for (int i = 0; i < size; i++){
-        if (strlen(contacts[i].numbers.cell) > 0){
+        if (strlen(contacts[i].numbers.cell) >0){
             printf("%d | ", total_contact+1);
             displayPatient(&contacts[i]);
             total_contact++;
@@ -573,7 +585,8 @@ void displayPatients(const struct Contact* contacts, int size) {
 void searchPatients(const struct Contact* contacts, int size) {
     int Indexnum = 0;
     char cellNumber[13] = { 0 };
-    printf("Enter the cell number for the contact: ");
+    printHeader("6. Search patients ");
+    printf("Enter the cell number of patient: ");
     scanf("%12[^\n]%*c", cellNumber);
     Indexnum = findIndex(contacts, size, cellNumber);
     if (Indexnum == 0 || Indexnum > 0){
@@ -581,7 +594,7 @@ void searchPatients(const struct Contact* contacts, int size) {
         displayPatient(&contacts[Indexnum]);
     }
     else{
-        printf("*** Contact NOT FOUND ***\n\n");
+        printf("*** Patient NOT FOUND ***\n\n");
     }
 }
 
@@ -591,11 +604,11 @@ void addPatients(struct Contact* contacts, int size) {
     printHeader("3. Add patient");
     emptyIndex = findIndex(contacts, size, Input_num);
     if (emptyIndex == -1){
-        printf("*** ERROR: The contact list is full! ***\n\n");
+        printf("*** ERROR: The patient list is full! ***\n\n");
     }
     else{
         getContact(&contacts[emptyIndex]);
-        printf("--- New contact added! ---\n\n");
+        printf("--- New patient added! ---\n\n");
     }
 }
 
@@ -626,7 +639,7 @@ void updatePatients(struct Contact* contacts, int size) {
     getTenDigitPhone(CellNum);
     index = findIndex(contacts, size, CellNum);
     if (index >= 0) {
-        printf("\nContact found:\n");
+        printf("\Patient found:\n");
         displayPatient(&contacts[index]);
         printf("\n");
         while (!isDone)
@@ -679,6 +692,7 @@ void updatePatients(struct Contact* contacts, int size) {
 void deletePatients(struct Contact* contacts, int size) {
     char CellNum[13] = { 0 };
     int index = 0;
+    printHeader("5. Remove patient ");
     printf("Enter the cell number for the contact: ");
     getTenDigitPhone(CellNum);
     clearKeyboard();
@@ -688,27 +702,27 @@ void deletePatients(struct Contact* contacts, int size) {
         printf("\n");
         printf("Contact found:\n");
         displayPatient(&contacts[index]);
-        printf("CONFIRM: Delete this contact? (y or n): ");
+        printf("CONFIRM: Delete this patient? (y or n): ");
         if (yes() == 1){
-            strcpy(contacts[index].numbers.cell, "");
-            strcpy(contacts[index].numbers.secondCell,"");
-            printf("--- Contact deleted! ---\n\n");
+            *(contacts + index)->name.firstName = '\0';
+            *(contacts + index)->numbers.cell = '\0';
+            *(contacts + index)->numbers.secondCell = '\0';
+            printf("--- patient deleted! ---\n\n");
         }
         else{
             printf("\n");
         }
     }
     else{
-        printf("*** Contact NOT FOUND ***\n\n");
+        printf("*** patient NOT FOUND ***\n\n");
     }
-    sortPatients(contacts, MAXCONTACTS);
 }
 
 void sortPatients(struct Contact* contacts, int size) {
     for (int i = 0;i < size;i++) {
-        if (strlen(contacts[i].numbers.cell) == 0){
+        if (strlen(contacts[i].numbers.cell) == 0 && strlen(contacts[i].name.firstName) != 0) {
             //if the patients information is deleted
-            contacts[size-1] = contacts[i];
+            contacts[size - 1] = contacts[i];
             contacts[i] = contacts[i + 1];
             *(contacts + i + 1)->numbers.cell = '\0';
         }

@@ -1,9 +1,9 @@
 # Project Title
-Covid19 - Patient Management & Record Tracking System
+COVID-19 Patient Management & Record Tracking System
 
 ## Description
 
-This application manages patient information such as Full name, Birth date, Address, Phone number, Covid19-testing date and result, \
+This application manages patient information such as Full name, Birth date, Address, Phone number, COVID-19 testing date and result, \
 and is allowed to Add, Modify, Remove, Search patient with cell phone number.\
 Also, it is able to get the records of patients who have tested positive in percentage by region or age.
 User can save the updated patients' data, and records of results.
@@ -27,10 +27,10 @@ Covid19-Testing Result
 
 ### Compiling and Running the Application
 * First of all, download the zip file and unzip on your computer, or clone the repository using HTTPS.\
-`git clone https://github.com/myjin590/Covid19-project.git`
+`git clone https://github.com/myjin590/Project-COVID-19-Patient-Management.git`
 
 * Compile the source codes\
-`gcc -o ws contact.c helpers.c covid19_project.`
+`gcc -o ws patient.c helpers.c main.c`
 * Run the executable program\
 `ws.exe`
 
@@ -73,6 +73,3 @@ Jinny Yun
 * 0.1
     * Initial Release
 
-## License
-
-This project is licensed under the JInny Yeejin Yun License - see the LICENSE.md file for details

@@ -139,13 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="covid19_project.c" />
+    <ClCompile Include="main.c" />
     <ClCompile Include="helpers.c" />
-    <ClCompile Include="contact.c" />
+    <ClCompile Include="patient.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helpers.h" />
-    <ClInclude Include="contact.h" />
+    <ClInclude Include="patient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

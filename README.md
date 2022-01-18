@@ -8,6 +8,14 @@ and is allowed to Add, Modify, Remove, Search patient with cell phone number.\
 Also, it is able to get the records of patients who have tested positive in percentage by region or age.
 User can save the updated patients' data, and records of results.
 
+## Additional project
+
+If user choose "save the data" when they exit the program, 
+the records of COVID19-testing result will be saved in csv file.\
+This results can be checked as graph.
+You can check the project from my repository 
+<a href="https://github.com/myjin590/Project-Data-Visualization">Project-Data-Visualization<href>
+
 ### Validation check
 
 Date
@@ -66,10 +74,10 @@ After deleting the patient\
 Jinny Yun
 
 ## Version History
-* 0.3
-   * Fixed bugs in sortPatient function
-* 0.2
-    * Various bug fixes and optimizations
 * 0.1
     * Initial Release
+
+## Acknowledgments
+<a href = "https://pages.github.com/">Github Pages</href><br>
+<a href = "https://www.briandunning.com/sample-data/">Sample Data</href>
 
